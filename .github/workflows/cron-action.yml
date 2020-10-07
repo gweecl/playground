@@ -35,4 +35,7 @@ jobs:
           echo test, and deploy your project.
           
           echo "SHA: $GITHUB_SHA" 
-          git diff-tree --no-commit-id --name-only -r $GITHUB_SHA | grep -q 'action'
+          if git diff-tree --no-commit-id --name-only -r $GITHUB_SHA | grep -q 'action'; then
+            echo "Yes, string exists ... "
+          fi
+          
