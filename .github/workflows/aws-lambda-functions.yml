@@ -1,0 +1,47 @@
+# This workflow will build and deploy source code to AWS Lambda.
+
+on:
+  push:
+    branches:
+      - master
+
+name: Prd Deployment to AWS Lambda
+
+jobs:
+  deploy:
+    name: Upload to Amazon Lambda
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials from Dev account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-1
+
+    - name: Build and deploy source code
+      run: |
+        echo "SHA: $GITHUB_SHA" 
+        git diff-tree --no-commit-id --name-only -r $GITHUB_SHA | grep -q 'lambda-functions'
+        
+        # echo "'lambda-functions' - Only update if files changed ... "
+        # if git diff-tree --no-commit-id --name-only -r $GITHUB_SHA \
+        # | grep -q 'lambda-functions'; then
+          # pushd lambda-functions
+          
+          # echo "Zip files ... "
+          # zip -r source.zip *
+
+          # echo "Updates a Lambda function's code ... "
+          # aws lambda update-function-code \
+          #   --function-name cf-moe-sls-microsite-Serv-FunctionArticlesSoftDele-WV86RNNQ104W \
+          #   --zip-file fileb://./source.zip
+          
+          # popd
+        # fi
+
+        
